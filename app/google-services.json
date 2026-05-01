@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98508635300",
+    "project_id": "tribu-a9e2a",
+    "storage_bucket": "tribu-a9e2a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98508635300:android:124bc305d9d53efbd57a31",
+        "android_client_info": {
+          "package_name": "com.example.tribu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0Bbx2fJF4PVNO0JmNoo7r1_EUOn7KBGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
