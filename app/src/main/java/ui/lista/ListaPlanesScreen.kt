@@ -6,13 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tribu.model.Plan
+import androidx.compose.foundation.clickable
 
 @Composable
 fun ListaPlanesScreen(
     modifier: Modifier = Modifier,
     planes: List<Plan>,
+    onPlanClick: (Plan) -> Unit,
     onVolver: () -> Unit
-) {
+){
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -33,17 +35,30 @@ fun ListaPlanesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 12.dp)
+                        .clickable { onPlanClick(plan) },
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
                             text = plan.titulo,
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleLarge
                         )
-                        Text("Lugar: ${plan.lugar}")
-                        Text("Fecha: ${plan.fecha}")
-                        Text("Descripción: ${plan.descripcion}")
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text("📍 ${plan.lugar}")
+                        Text("📅 ${plan.fecha}")
+
+                        Text(
+                            text = "🏷️ ${plan.tipo}",
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(plan.descripcion)
                     }
                 }
             }

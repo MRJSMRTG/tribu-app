@@ -16,7 +16,8 @@ import com.example.tribu.ui.theme.TribuTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tribu.ui.perfil.PerfilScreen
-
+import com.example.tribu.ui.detalle.DetallePlanScreen
+import com.example.tribu.ui.editar.EditarPlanScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,7 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
 
+    var planSeleccionado by remember { mutableStateOf<Plan?>(null) }
     var usuarioLogueado by remember {
         mutableStateOf(auth.currentUser != null)
     }
@@ -59,14 +61,18 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
                         val fecha = documento.getString("fecha") ?: ""
                         val descripcion = documento.getString("descripcion") ?: ""
                         val tipo = documento.getString("tipo") ?: ""
+                        val precio = documento.getString("precio") ?: ""
 
                         planes.add(
                             Plan(
+                                id = documento.id,
                                 titulo = titulo,
                                 lugar = lugar,
                                 fecha = fecha,
                                 descripcion = descripcion,
-                                tipo = tipo
+                                tipo = tipo,
+                                precio = precio,
+                                asistentes = documento.getLong("asistentes")?.toInt() ?: 0
                             )
                         )
                     }
@@ -108,13 +114,20 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
                         "lugar" to nuevoPlan.lugar,
                         "fecha" to nuevoPlan.fecha,
                         "descripcion" to nuevoPlan.descripcion,
-                        "tipo" to nuevoPlan.tipo
+                        "tipo" to nuevoPlan.tipo,
+                        "precio" to nuevoPlan.precio,
+                        "asistentes" to 0
                     )
 
                     db.collection("planes")
                         .add(planMap)
-                        .addOnSuccessListener {
-                            planes.add(nuevoPlan)
+                        .addOnSuccessListener { documento ->
+                            val planConId = nuevoPlan.copy(
+                                id = documento.id,
+                                asistentes = 0
+                            )
+
+                            planes.add(planConId)
                             pantallaActual = "home"
                         }
                 },
@@ -122,14 +135,69 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
                     pantallaActual = "home"
                 }
             )
+            "detalle" -> {
+                planSeleccionado?.let { plan ->
+                    DetallePlanScreen(
+                        modifier = modifier,
+                        plan = plan,
+                        onVolver = {
+                            pantallaActual = "lista"
+                        },
+                        onEliminar = {
+                            planes.remove(plan)
+                            planSeleccionado = null
+                            pantallaActual = "lista"
+                        },
+                        onEditar = {
+                            pantallaActual = "editar"
+                        }
+                    )
+                }
+            }
 
             "lista" -> ListaPlanesScreen(
                 modifier = modifier,
                 planes = planes,
+                onPlanClick = { plan ->
+                    planSeleccionado = plan
+                    pantallaActual = "detalle"
+                },
                 onVolver = {
                     pantallaActual = "home"
                 }
             )
+            "editar" -> {
+                planSeleccionado?.let { plan ->
+                    EditarPlanScreen(
+                        plan = plan,
+                        onGuardar = { planEditado ->
+
+                            db.collection("planes")
+                                .document(planEditado.id)
+                                .update(
+                                    mapOf(
+                                        "titulo" to planEditado.titulo,
+                                        "lugar" to planEditado.lugar,
+                                        "fecha" to planEditado.fecha,
+                                        "descripcion" to planEditado.descripcion,
+                                        "tipo" to planEditado.tipo,
+                                        "precio" to planEditado.precio
+                                    )
+                                )
+
+                            val index = planes.indexOfFirst { it.id == planEditado.id }
+                            if (index != -1) {
+                                planes[index] = planEditado
+                            }
+
+                            pantallaActual = "detalle"
+                        },
+                        onVolver = {
+                            pantallaActual = "detalle"
+                        }
+                    )
+                }
+            }
         }
     }
 }

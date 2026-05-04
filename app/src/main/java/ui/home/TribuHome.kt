@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
 
 @Composable
 fun TribuHome(
@@ -18,11 +19,12 @@ fun TribuHome(
         modifier = modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "🌿 TRIBU",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -34,26 +36,46 @@ fun TribuHome(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = onCrearClick) {
-            Text("Crear quedada")
+        Button(
+            onClick = onCrearClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        ) {
+            Text("➕ Crear quedada")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Button(onClick = onVerClick) {
-            Text("Ver quedadas")
+        Button(
+            onClick = onVerClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        ) {
+            Text("📋 Ver quedadas")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Button(onClick = onPerfilClick) {
-            Text("Mi perfil familiar")
+        Button(
+            onClick = onPerfilClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        ) {
+            Text("👨‍👩‍👧‍👦 Mi perfil")
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = onLogout) {
-            Text("Cerrar sesión")
+        Button(
+            onClick = onLogout,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        ) {
+            Text("🚪 Cerrar sesión")
         }
     }
 }

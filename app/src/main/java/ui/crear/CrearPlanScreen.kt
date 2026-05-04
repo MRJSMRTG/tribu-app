@@ -19,6 +19,7 @@ fun CrearPlanScreen(
     var descripcion by remember { mutableStateOf("") }
     var mensajeError by remember { mutableStateOf("") }
     var tipo by remember { mutableStateOf("") }
+    var precio by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -74,6 +75,14 @@ fun CrearPlanScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        OutlinedTextField(
+            value = precio,
+            onValueChange = { precio = it },
+            label = { Text("Precio (opcional)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
         if (mensajeError.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -96,7 +105,8 @@ fun CrearPlanScreen(
                         lugar = lugar,
                         fecha = fecha,
                         descripcion = descripcion,
-                        tipo = tipo
+                        tipo = tipo,
+                        precio = precio
                     )
 
                     mensajeError = "Quedada guardada correctamente"
