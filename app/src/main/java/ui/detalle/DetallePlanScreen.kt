@@ -9,6 +9,9 @@ import com.example.tribu.model.Plan
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun DetallePlanScreen(
@@ -19,6 +22,7 @@ fun DetallePlanScreen(
     onEditar: () -> Unit,
 ) {
     val db = FirebaseFirestore.getInstance()
+    val context = LocalContext.current
 
     var apuntado by remember { mutableStateOf(false) }
     var asistentes by remember { mutableStateOf(plan.asistentes) }
@@ -49,6 +53,17 @@ fun DetallePlanScreen(
             ) {
                 Text("📍 Lugar: ${plan.lugar}")
                 Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        val uri = Uri.parse("geo:0,0?q=${Uri.encode(plan.lugar)}")
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        context.startActivity(intent)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Ver ubicación en mapa")
+                }
 
                 Text("📅 Fecha: ${plan.fecha}")
                 Spacer(modifier = Modifier.height(8.dp))
@@ -162,7 +177,20 @@ fun DetallePlanScreen(
             Text("• $it")
         }
         Spacer(modifier = Modifier.height(24.dp))
-
+        LaunchedEffect(plan.id) {
+            if (plan.id.isNotEmpty()) {
+                db.collection("comentarios")
+                    .whereEqualTo("planId", plan.id)
+                    .get()
+                    .addOnSuccessListener { resultado ->
+                        comentarios.clear()
+                        for (doc in resultado) {
+                            val texto = doc.getString("texto") ?: ""
+                            comentarios.add(texto)
+                        }
+                    }
+            }
+        }
         Button(
             onClick = onVolver,
             modifier = Modifier.fillMaxWidth()

@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tribu.ui.perfil.PerfilScreen
 import com.example.tribu.ui.detalle.DetallePlanScreen
 import com.example.tribu.ui.editar.EditarPlanScreen
+import com.example.tribu.ui.parque.ModoParqueScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +100,7 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
                 onCrearClick = { pantallaActual = "crear" },
                 onVerClick = { pantallaActual = "lista" },
                 onPerfilClick = { pantallaActual = "perfil" },
+                onParqueClick = { pantallaActual = "parque" },
                 onLogout = {
                     auth.signOut()
                     usuarioLogueado = false
@@ -198,6 +200,12 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
                     )
                 }
             }
+            "parque" -> ModoParqueScreen(
+                modifier = modifier,
+                onVolver = {
+                    pantallaActual = "home"
+                }
+            )
         }
     }
 }

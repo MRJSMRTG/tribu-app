@@ -13,6 +13,7 @@ fun TribuHome(
     onCrearClick: () -> Unit,
     onVerClick: () -> Unit,
     onPerfilClick: () -> Unit,
+    onParqueClick: () -> Unit,
     onLogout: () -> Unit
 ) {
     Column(
@@ -67,7 +68,18 @@ fun TribuHome(
             Text("👨‍👩‍👧‍👦 Mi perfil")
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(
+            onClick = onParqueClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        ) {
+            Text("🌳 Modo Parque")
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = onLogout,
@@ -77,5 +89,6 @@ fun TribuHome(
         ) {
             Text("🚪 Cerrar sesión")
         }
+
+        }
     }
-}
