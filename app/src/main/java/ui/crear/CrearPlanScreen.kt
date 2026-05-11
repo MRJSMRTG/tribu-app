@@ -6,7 +6,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tribu.model.Plan
+import java.text.SimpleDateFormat
+import java.util.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearPlanScreen(
     modifier: Modifier = Modifier,
@@ -20,6 +25,41 @@ fun CrearPlanScreen(
     var mensajeError by remember { mutableStateOf("") }
     var tipo by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
+
+    var mostrarCalendario by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
+    if (mostrarCalendario) {
+        DatePickerDialog(
+            onDismissRequest = {
+                mostrarCalendario = false
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            fecha = formatter.format(Date(millis))
+                        }
+                        mostrarCalendario = false
+                    }
+                ) {
+                    Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        mostrarCalendario = false
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     Column(
         modifier = modifier
@@ -53,9 +93,22 @@ fun CrearPlanScreen(
 
         OutlinedTextField(
             value = fecha,
-            onValueChange = { fecha = it },
+            onValueChange = {},
             label = { Text("Fecha") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = true,
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        mostrarCalendario = true
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = "Seleccionar fecha"
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -66,14 +119,17 @@ fun CrearPlanScreen(
             label = { Text("Descripción") },
             modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = tipo,
             onValueChange = { tipo = it },
-            label = { Text("Tipo de actividad (parque, bici, museo...)") },
+            label = { Text("Tipo de actividad") },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = precio,
@@ -82,7 +138,6 @@ fun CrearPlanScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
         if (mensajeError.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -109,7 +164,6 @@ fun CrearPlanScreen(
                         precio = precio
                     )
 
-                    mensajeError = "Quedada guardada correctamente"
                     onGuardar(nuevoPlan)
                 }
             },

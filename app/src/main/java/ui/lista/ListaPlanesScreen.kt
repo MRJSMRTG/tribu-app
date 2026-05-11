@@ -1,12 +1,14 @@
 package com.example.tribu.ui.lista
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tribu.model.Plan
-import androidx.compose.foundation.clickable
 
 @Composable
 fun ListaPlanesScreen(
@@ -14,7 +16,7 @@ fun ListaPlanesScreen(
     planes: List<Plan>,
     onPlanClick: (Plan) -> Unit,
     onVolver: () -> Unit
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -30,35 +32,45 @@ fun ListaPlanesScreen(
         if (planes.isEmpty()) {
             Text("Todavía no hay quedadas creadas.")
         } else {
-            planes.forEach { plan ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                        .clickable { onPlanClick(plan) },
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+            LazyColumn(
+                modifier = Modifier.weight(1f)
+            ) {
+                items(planes) { plan ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .clickable { onPlanClick(plan) },
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                     ) {
-                        Text(
-                            text = plan.titulo,
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = plan.titulo,
+                                style = MaterialTheme.typography.titleLarge
+                            )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
-                        Text("📍 ${plan.lugar}")
-                        Text("📅 ${plan.fecha}")
+                            Text("📍 ${plan.lugar}")
+                            Text("📅 ${plan.fecha}")
 
-                        Text(
-                            text = "🏷️ ${plan.tipo}",
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                            Text(
+                                text = "🏷️ ${plan.tipo}",
+                                color = MaterialTheme.colorScheme.primary
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            if (plan.precio.isNotEmpty()) {
+                                Text("💶 ${plan.precio}")
+                            } else {
+                                Text("💶 Gratis")
+                            }
 
-                        Text(plan.descripcion)
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(plan.descripcion)
+                        }
                     }
                 }
             }
@@ -66,7 +78,10 @@ fun ListaPlanesScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onVolver) {
+        TextButton(
+            onClick = onVolver,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Volver")
         }
     }

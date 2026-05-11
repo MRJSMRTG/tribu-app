@@ -171,6 +171,7 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
             "editar" -> {
                 planSeleccionado?.let { plan ->
                     EditarPlanScreen(
+                        modifier = modifier,
                         plan = plan,
                         onGuardar = { planEditado ->
 
@@ -186,13 +187,16 @@ fun TribuAppScreen(modifier: Modifier = Modifier) {
                                         "precio" to planEditado.precio
                                     )
                                 )
+                                .addOnSuccessListener {
+                                    val index = planes.indexOfFirst { it.id == planEditado.id }
 
-                            val index = planes.indexOfFirst { it.id == planEditado.id }
-                            if (index != -1) {
-                                planes[index] = planEditado
-                            }
+                                    if (index != -1) {
+                                        planes[index] = planEditado
+                                    }
 
-                            pantallaActual = "detalle"
+                                    planSeleccionado = planEditado
+                                    pantallaActual = "detalle"
+                                }
                         },
                         onVolver = {
                             pantallaActual = "detalle"

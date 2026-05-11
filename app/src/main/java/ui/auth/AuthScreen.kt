@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
 fun AuthScreen(
@@ -24,7 +24,6 @@ fun AuthScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
-
         Text(
             text = "Login TRIBU",
             style = MaterialTheme.typography.headlineMedium
@@ -53,14 +52,18 @@ fun AuthScreen(
 
         Button(
             onClick = {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            onLoginSuccess()
-                        } else {
-                            mensaje = "Error al iniciar sesión"
+                if (email.isBlank() || password.length < 6) {
+                    mensaje = "Introduce un email válido y una contraseña de al menos 6 caracteres"
+                } else {
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                onLoginSuccess()
+                            } else {
+                                mensaje = "Error al iniciar sesión"
+                            }
                         }
-                    }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -71,14 +74,18 @@ fun AuthScreen(
 
         Button(
             onClick = {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            onLoginSuccess()
-                        } else {
-                            mensaje = "Error al registrarse"
+                if (email.isBlank() || password.length < 6) {
+                    mensaje = "Introduce un email válido y una contraseña de al menos 6 caracteres"
+                } else {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                onLoginSuccess()
+                            } else {
+                                mensaje = "Error al registrarse. Prueba con otro email."
+                            }
                         }
-                    }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -87,7 +94,10 @@ fun AuthScreen(
 
         if (mensaje.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(mensaje, color = MaterialTheme.colorScheme.error)
+            Text(
+                text = mensaje,
+                color = MaterialTheme.colorScheme.error
+            )
         }
     }
 }
