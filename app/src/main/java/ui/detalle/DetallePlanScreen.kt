@@ -1,17 +1,20 @@
 package com.example.tribu.ui.detalle
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.tribu.model.Plan
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun DetallePlanScreen(
@@ -23,6 +26,8 @@ fun DetallePlanScreen(
 ) {
     val db = FirebaseFirestore.getInstance()
     val context = LocalContext.current
+    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+    val esCreador = plan.creadorId == currentUserId
 
     var apuntado by remember { mutableStateOf(false) }
     var asistentes by remember { mutableStateOf(plan.asistentes) }
@@ -34,9 +39,10 @@ fun DetallePlanScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(Color(0xFFFFF8E1))
             .verticalScroll(rememberScrollState())
             .padding(24.dp)
-    ){
+    ) {
         Text(
             text = plan.titulo,
             style = MaterialTheme.typography.headlineSmall
@@ -46,6 +52,9 @@ fun DetallePlanScreen(
 
         Card(
             modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
         ) {
             Column(
@@ -65,14 +74,16 @@ fun DetallePlanScreen(
                     Text("Ver ubicación en mapa")
                 }
 
-                Text("📅 Fecha: ${plan.fecha}")
                 Spacer(modifier = Modifier.height(8.dp))
+                Text("📅 Fecha: ${plan.fecha}")
 
+                Spacer(modifier = Modifier.height(8.dp))
                 Text("🏷️ Tipo: ${plan.tipo}")
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = if (plan.precio.isNotEmpty()) {
+                    if (plan.precio.isNotEmpty()) {
                         "💶 Precio: ${plan.precio}"
                     } else {
                         "💶 Gratis"
@@ -98,6 +109,7 @@ fun DetallePlanScreen(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
+
                 Button(
                     onClick = {
                         val cantidad = asistentesFamilia.toIntOrNull()
@@ -114,10 +126,13 @@ fun DetallePlanScreen(
                                     mensaje = "Os habéis apuntado correctamente"
                                 }
                         } else {
-                            mensaje = "Introduce un número válido de asistentes"
+                            mensaje = "Introduce un número válido"
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF81C784)
+                    )
                 ) {
                     Text(if (apuntado) "Ya estáis apuntados" else "Me apunto")
                 }
@@ -131,13 +146,22 @@ fun DetallePlanScreen(
                 }
             }
         }
-        Button(
-            onClick = { onEditar() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Editar quedada")
-        }
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        if (esCreador) {
+            Button(
+                onClick = { onEditar() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFB74D)
+                )
+            ) {
+                Text("Editar quedada")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         OutlinedTextField(
             value = comentario,
@@ -151,7 +175,6 @@ fun DetallePlanScreen(
         Button(
             onClick = {
                 if (comentario.isNotBlank() && plan.id.isNotEmpty()) {
-
                     val nuevoComentario = hashMapOf(
                         "texto" to comentario,
                         "planId" to plan.id
@@ -165,10 +188,14 @@ fun DetallePlanScreen(
                         }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF64B5F6)
+            )
         ) {
             Text("Enviar comentario")
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Text("Comentarios:")
@@ -176,7 +203,7 @@ fun DetallePlanScreen(
         comentarios.forEach {
             Text("• $it")
         }
-        Spacer(modifier = Modifier.height(24.dp))
+
         LaunchedEffect(plan.id) {
             if (plan.id.isNotEmpty()) {
                 db.collection("comentarios")
@@ -191,32 +218,40 @@ fun DetallePlanScreen(
                     }
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Button(
             onClick = onVolver,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFBA68C8)
+            )
         ) {
             Text("Volver")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(
-            onClick = {
-                if (plan.id.isNotEmpty()) {
-                    db.collection("planes")
-                        .document(plan.id)
-                        .delete()
-                        .addOnSuccessListener {
-                            onEliminar()
-                        }
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error
-            )
-        ) {
-            Text("Eliminar quedada")
+        if (esCreador) {
+            Button(
+                onClick = {
+                    if (plan.id.isNotEmpty()) {
+                        db.collection("planes")
+                            .document(plan.id)
+                            .delete()
+                            .addOnSuccessListener {
+                                onEliminar()
+                            }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFE57373)
+                )
+            ) {
+                Text("Eliminar quedada")
+            }
         }
     }
 }

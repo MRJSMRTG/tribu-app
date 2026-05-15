@@ -1,9 +1,13 @@
 package com.example.tribu.ui.perfil
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,57 +49,77 @@ fun PerfilScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(Color(0xFFFFF8E1))
+            .verticalScroll(rememberScrollState())
             .padding(24.dp)
     ) {
         Text(
-            text = "Perfil familiar",
+            text = "👨‍👩‍👧‍👦 Perfil familiar",
             style = MaterialTheme.typography.headlineSmall
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = nombreFamilia,
-            onValueChange = { nombreFamilia = it },
-            label = { Text("Nombre de la familia") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Datos de tu familia",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFF2E7D32)
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-        OutlinedTextField(
-            value = zona,
-            onValueChange = { zona = it },
-            label = { Text("Zona") },
-            modifier = Modifier.fillMaxWidth()
-        )
+                OutlinedTextField(
+                    value = nombreFamilia,
+                    onValueChange = { nombreFamilia = it },
+                    label = { Text("Nombre de la familia") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = numeroHijos,
-            onValueChange = { numeroHijos = it },
-            label = { Text("Número de hijos") },
-            modifier = Modifier.fillMaxWidth()
-        )
+                OutlinedTextField(
+                    value = zona,
+                    onValueChange = { zona = it },
+                    label = { Text("Zona") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = edadesHijos,
-            onValueChange = { edadesHijos = it },
-            label = { Text("Edades de los hijos") },
-            modifier = Modifier.fillMaxWidth()
-        )
+                OutlinedTextField(
+                    value = numeroHijos,
+                    onValueChange = { numeroHijos = it },
+                    label = { Text("Número de hijos") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = intereses,
-            onValueChange = { intereses = it },
-            label = { Text("Intereses") },
-            modifier = Modifier.fillMaxWidth()
-        )
+                OutlinedTextField(
+                    value = edadesHijos,
+                    onValueChange = { edadesHijos = it },
+                    label = { Text("Edades de los hijos") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = intereses,
+                    onValueChange = { intereses = it },
+                    label = { Text("Intereses") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -124,21 +148,30 @@ fun PerfilScreen(
                         }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF81C784)
+            )
         ) {
             Text("Guardar perfil")
         }
 
         if (mensaje.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(mensaje)
+            Text(
+                text = mensaje,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextButton(
+        Button(
             onClick = onVolver,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFBA68C8)
+            )
         ) {
             Text("Volver")
         }

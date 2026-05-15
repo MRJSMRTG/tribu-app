@@ -1,15 +1,18 @@
 package com.example.tribu.ui.crear
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.tribu.model.Plan
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,9 +34,7 @@ fun CrearPlanScreen(
 
     if (mostrarCalendario) {
         DatePickerDialog(
-            onDismissRequest = {
-                mostrarCalendario = false
-            },
+            onDismissRequest = { mostrarCalendario = false },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -48,11 +49,7 @@ fun CrearPlanScreen(
                 }
             },
             dismissButton = {
-                TextButton(
-                    onClick = {
-                        mostrarCalendario = false
-                    }
-                ) {
+                TextButton(onClick = { mostrarCalendario = false }) {
                     Text("Cancelar")
                 }
             }
@@ -64,31 +61,20 @@ fun CrearPlanScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(Color(0xFFFFF8E1))
             .padding(24.dp)
     ) {
         Text(
-            text = "Crear quedada",
+            text = "📝 Crear quedada",
             style = MaterialTheme.typography.headlineSmall
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = titulo,
-            onValueChange = { titulo = it },
-            label = { Text("Título") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        OutlinedTextField(value = titulo, onValueChange = { titulo = it }, label = { Text("Título") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = lugar,
-            onValueChange = { lugar = it },
-            label = { Text("Lugar") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        OutlinedTextField(value = lugar, onValueChange = { lugar = it }, label = { Text("Lugar") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
@@ -98,52 +84,25 @@ fun CrearPlanScreen(
             modifier = Modifier.fillMaxWidth(),
             readOnly = true,
             trailingIcon = {
-                IconButton(
-                    onClick = {
-                        mostrarCalendario = true
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Seleccionar fecha"
-                    )
+                IconButton(onClick = { mostrarCalendario = true }) {
+                    Icon(Icons.Default.DateRange, contentDescription = "Seleccionar fecha")
                 }
             }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = descripcion,
-            onValueChange = { descripcion = it },
-            label = { Text("Descripción") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        OutlinedTextField(value = descripcion, onValueChange = { descripcion = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = tipo,
-            onValueChange = { tipo = it },
-            label = { Text("Tipo de actividad") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        OutlinedTextField(value = tipo, onValueChange = { tipo = it }, label = { Text("Tipo de actividad") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = precio,
-            onValueChange = { precio = it },
-            label = { Text("Precio (opcional)") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = precio, onValueChange = { precio = it }, label = { Text("Precio (opcional)") }, modifier = Modifier.fillMaxWidth())
 
         if (mensajeError.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = mensajeError,
-                color = MaterialTheme.colorScheme.error
-            )
+            Text(mensajeError, color = MaterialTheme.colorScheme.error)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -153,7 +112,7 @@ fun CrearPlanScreen(
                 if (titulo.isBlank() || lugar.isBlank() || fecha.isBlank()) {
                     mensajeError = "Completa título, lugar y fecha"
                 } else {
-                    mensajeError = ""
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
                     val nuevoPlan = Plan(
                         titulo = titulo,
@@ -161,22 +120,25 @@ fun CrearPlanScreen(
                         fecha = fecha,
                         descripcion = descripcion,
                         tipo = tipo,
-                        precio = precio
+                        precio = precio,
+                        creadorId = userId
                     )
 
                     onGuardar(nuevoPlan)
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF81C784))
         ) {
             Text("Guardar quedada")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextButton(
+        Button(
             onClick = onVolver,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFBA68C8))
         ) {
             Text("Volver")
         }

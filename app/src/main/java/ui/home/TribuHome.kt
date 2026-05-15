@@ -1,11 +1,21 @@
 package com.example.tribu.ui.home
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.tribu.R
 
 @Composable
 fun TribuHome(
@@ -19,31 +29,49 @@ fun TribuHome(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color(0xFFFFF8E1))
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "🌿 TRIBU",
-            style = MaterialTheme.typography.headlineLarge
+            fontSize = 34.sp,
+            fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Conecta familias y crea quedadas",
+            text = "Conectando familias cerca de ti 💛",
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.familia_tribu),
+            contentDescription = "Familias en el parque",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(190.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.height(28.dp))
 
         Button(
             onClick = onCrearClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(58.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF81C784)
+            )
         ) {
-            Text("➕ Crear quedada")
+            Text("📝 Crear quedada")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -52,7 +80,11 @@ fun TribuHome(
             onClick = onVerClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(58.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF64B5F6)
+            )
         ) {
             Text("📋 Ver quedadas")
         }
@@ -63,7 +95,11 @@ fun TribuHome(
             onClick = onPerfilClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(58.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFBA68C8)
+            )
         ) {
             Text("👨‍👩‍👧‍👦 Mi perfil")
         }
@@ -74,7 +110,11 @@ fun TribuHome(
             onClick = onParqueClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(58.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4DB6AC)
+            )
         ) {
             Text("🌳 Modo Parque")
         }
@@ -85,10 +125,13 @@ fun TribuHome(
             onClick = onLogout,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(58.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFE57373)
+            )
         ) {
-            Text("🚪 Cerrar sesión")
-        }
-
+            Text("🔒 Cerrar sesión")
         }
     }
+}
