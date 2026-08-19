@@ -92,7 +92,7 @@ Funcionalidad social que permite:
 - Abrir su ubicación en mapa
 - Activar o desactivar el estado
 
-Esta funcionalidad está planteada como una versión MVP de una futura geolocalización en tiempo real.
+Esta funcionalidad está planteada como una primera versión de una futura geolocalización en tiempo real.
 
 ---
 
@@ -178,4 +178,4 @@ Trabajo de Fin de Grado
 
 ## 🔗 Repositorio
 
-https://github.com/MRJSMRTG/tribu-app.git
+https://github.com/MRJSMRTG/tribu-app
